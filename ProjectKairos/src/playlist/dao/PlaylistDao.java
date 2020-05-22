@@ -100,14 +100,15 @@ public class PlaylistDao {
 	public int sortOrderNo(Connection conn, String userId, Playlist p, int index) {
 		int result = 0;
 		PreparedStatement pstmt = null;
-		String query = "update playlist set order_no =? where listed_song_no = ? and user_id =?  and order_no = ?";
+//		String query = "update playlist set order_no =? where listed_song_no = ? and user_id =?  and order_no = ?";
 
+		String query = "insert into playlist values(?,?,?)";
+		
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, index);
+			pstmt.setString(1, userId);
 			pstmt.setInt(2, p.getSongNo());
-			pstmt.setString(3, userId);
-			pstmt.setInt(4, p.getOrderNo());
+			pstmt.setInt(3, index);
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -169,7 +170,7 @@ public class PlaylistDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		ArrayList<Playlist> list = new ArrayList<Playlist>();
-		String query = "SELECT * FROM (SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO),0)as liked "
+		String query = "SELECT * FROM (SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO AND USER_ID = ?),0)as liked "
 				+ "FROM (SELECT * FROM PLAYLIST P JOIN SONG S "
 				+ "ON (LISTED_SONG_NO = SONG_NO) JOIN ALBUM A USING(ALBUM_NO) "
 				+ "WHERE USER_ID = ? ) T) WHERE SONG_TITLE LIKE ? ";
@@ -177,7 +178,8 @@ public class PlaylistDao {
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, userId);
-			pstmt.setString(2, "%" + keyword + "%");
+			pstmt.setString(2, userId);
+			pstmt.setString(3, "%" + keyword + "%");
 			rset = pstmt.executeQuery();
 			while (rset.next()) {
 				Playlist p = new Playlist();
@@ -208,7 +210,7 @@ public class PlaylistDao {
 		ResultSet rset = null;
 		ArrayList<Playlist> list = new ArrayList<Playlist>();
 
-		String query = "SELECT * FROM (SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO),0)as liked "
+		String query = "SELECT * FROM (SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO AND USER_ID = ?),0)as liked "
 				+ "FROM (SELECT * FROM PLAYLIST P JOIN SONG S "
 				+ "ON (LISTED_SONG_NO = SONG_NO) JOIN ALBUM A USING(ALBUM_NO) "
 				+ "WHERE USER_ID = ? ) T) WHERE SONG_ARTIST LIKE ? ";
@@ -216,7 +218,8 @@ public class PlaylistDao {
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, userId);
-			pstmt.setString(2, "%" + keyword + "%");
+			pstmt.setString(2, userId);
+			pstmt.setString(3, "%" + keyword + "%");
 			rset = pstmt.executeQuery();
 			while (rset.next()) {
 				Playlist p = new Playlist();
@@ -246,7 +249,7 @@ public class PlaylistDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		ArrayList<Playlist> list = new ArrayList<Playlist>();
-		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO),0)as liked "
+		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO AND USER_ID = ?),0)as liked "
 				+ "FROM (SELECT * FROM PLAYLIST P JOIN SONG S "
 				+ "ON (LISTED_SONG_NO = SONG_NO) JOIN ALBUM A USING(ALBUM_NO) "
 				+ "WHERE USER_ID = ? ) T ORDER BY SONG_ARTIST ASC";
@@ -254,6 +257,7 @@ public class PlaylistDao {
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
 			rset = pstmt.executeQuery();
 			while (rset.next()) {
 				Playlist p = new Playlist();
@@ -283,7 +287,7 @@ public class PlaylistDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		ArrayList<Playlist> list = new ArrayList<Playlist>();
-		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO),0)as liked "
+		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO AND USER_ID = ?),0)as liked "
 				+ "FROM (SELECT * FROM PLAYLIST P JOIN SONG S "
 				+ "ON (LISTED_SONG_NO = SONG_NO) JOIN ALBUM A USING(ALBUM_NO) "
 				+ "WHERE USER_ID = ? ) T ORDER BY SONG_ARTIST DESC";
@@ -291,6 +295,7 @@ public class PlaylistDao {
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
 			rset = pstmt.executeQuery();
 			while (rset.next()) {
 				Playlist p = new Playlist();
@@ -320,7 +325,7 @@ public class PlaylistDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		ArrayList<Playlist> list = new ArrayList<Playlist>();
-		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO),0)as liked "
+		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO AND USER_ID = ?),0)as liked "
 				+ "FROM (SELECT * FROM PLAYLIST P JOIN SONG S "
 				+ "ON (LISTED_SONG_NO = SONG_NO) JOIN ALBUM A USING(ALBUM_NO) "
 				+ "WHERE USER_ID = ? ) T ORDER BY SONG_TITLE ASC";
@@ -328,6 +333,7 @@ public class PlaylistDao {
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
 			rset = pstmt.executeQuery();
 			while (rset.next()) {
 				Playlist p = new Playlist();
@@ -357,7 +363,7 @@ public class PlaylistDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		ArrayList<Playlist> list = new ArrayList<Playlist>();
-		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO),0)as liked "
+		String query = "SELECT T.*,NVL((SELECT LIKED_SONG_NO FROM LIKELIST WHERE LIKED_SONG_NO = LISTED_SONG_NO AND USER_ID = ?),0)as liked "
 				+ "FROM (SELECT * FROM PLAYLIST P JOIN SONG S "
 				+ "ON (LISTED_SONG_NO = SONG_NO) JOIN ALBUM A USING(ALBUM_NO) "
 				+ "WHERE USER_ID = ? ) T ORDER BY SONG_TITLE DESC";
@@ -365,6 +371,7 @@ public class PlaylistDao {
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
 			rset = pstmt.executeQuery();
 			while (rset.next()) {
 				Playlist p = new Playlist();
